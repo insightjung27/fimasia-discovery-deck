@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>떠리 보물찾기 — 둘러보다 건지는 발견형 커머스 제안</title>
+<meta name="description" content="정치성 · 핌아시아 이커머스 기획 제안 — 떠리몰을 '검색으로 목적구매하는 몰'에서 '둘러보다 우연히 건지는 보물찾기 놀이터'로 확장하는 발견형(디스커버리) 커머스 제안.">
+<!--
+  J 발표덱 스타일(SSOT=발표덱_스타일_가이드.md) · 고정 1280×720 scale-fit 발표덱.
+  원칙: ①중앙정렬 ②가독성(§0.5 뷰포트 꽉·큰 글씨) ③레드강조만 ④빈공간 최소화 ⑤안정적·일관 UI.
+  외부 벤치마크 수치는 마케팅/애그리게이터 재인용 → 'ⓔ 업계 추정' 표기. 회사 검증 수치만 인용.
+-->
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
+:root{
+  --bg:#ffffff; --ink:#232528; --ink2:#2c2f33; --gray:#8b9096; --gray2:#a6abb2; --body:#4a4f56;
+  --red:#e12e2e; --red-soft:#fbecec; --charcoal:#3a3d41; --charcoal2:#2d2f33;
+  --thead:#e9edf9; --tline:#dbe1f0; --blue:#2f66e6; --swoosh:#eef1f6;
+  --wire:#eef0f3; --wireln:#cfd4da; --wiredk:#dde1e6; --panel:#f6f7f9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#0c0d0f;overflow:hidden;
+  font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  -webkit-font-smoothing:antialiased;word-break:keep-all}
+#fit{position:fixed;top:50%;left:50%;transform-origin:center center}
+#deck{width:1280px;height:720px;position:relative;background:var(--bg);overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.slide{position:absolute;inset:0;padding:76px 52px 46px;display:none;flex-direction:column;justify-content:center}
+.slide.on{display:flex}
+.hd{position:absolute;top:30px;left:52px;right:52px;display:flex;justify-content:space-between;align-items:baseline;z-index:3}
+.hd .sec{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.hd .pg{font-size:20px;font-weight:600;color:var(--gray2);letter-spacing:.02em}
+/* title block */
+.tw{text-align:center;flex:none}
+.eyebrow{font-size:22px;font-weight:600;color:var(--gray);margin-bottom:15px;letter-spacing:.005em}
+.headline{font-size:47px;font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+.headline.sm{font-size:44px;line-height:1.18}
+.red{color:var(--red)}
+.body{margin-top:52px;flex:none}
+/* paybar */
+.paybar{display:flex;align-items:center;gap:15px;background:var(--red-soft);border-left:7px solid var(--red);
+  border-radius:12px;padding:23px 30px;margin:0 auto;max-width:1180px;box-shadow:0 4px 18px rgba(225,46,46,.06)}
+.paybar .tag{flex:none;background:var(--red);color:#fff;font-size:14px;font-weight:800;border-radius:7px;padding:8px 15px;letter-spacing:.02em}
+.paybar .t{font-size:24px;color:var(--ink2);font-weight:600;line-height:1.42}
+.paybar .t b{color:var(--red);font-weight:800}
+.paybar.neu{background:#f3f4f6;border-left-color:var(--charcoal)}
+.paybar.neu .tag{background:var(--charcoal)}
+.paybar.neu .t b{color:var(--ink)}
+/* chips / flow */
+.flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:nowrap}
+.node{background:var(--charcoal);color:#fff;border-radius:999px;font-weight:700;padding:22px 24px;font-size:18.5px;text-align:center;white-space:nowrap}
+.node.on{background:var(--red)}
+.arw{color:#b3b8bf;font-size:20px;font-weight:900}
+/* cards grid */
+.cards{display:grid;gap:26px;margin:0 auto}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.card{border:1px solid #edf0f4;border-radius:16px;padding:38px 30px;background:#fff;min-width:0;
+  box-shadow:0 4px 18px rgba(30,25,40,.06);display:flex;flex-direction:column;gap:12px}
+.card .num{align-self:flex-start;background:var(--charcoal);color:#fff;font-weight:800;font-size:15px;border-radius:999px;padding:7px 15px}
+.card .kh{font-size:25px;font-weight:800;color:var(--ink);line-height:1.22}
+.card .kt{font-size:19.5px;color:var(--body);line-height:1.5}
+.card .kt b{font-weight:800;color:var(--ink)}
+.card .fig{font-size:34px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.card.hot{border-color:#f3c7c7;background:#fffafa;box-shadow:0 4px 18px rgba(225,46,46,.07)}
+.card.hot .num{background:var(--red)}
+.card.hot .kh,.card.hot .fig{color:var(--red)}
+.card.hot .kt b{color:var(--red)}
+/* table */
+table{border-collapse:separate;border-spacing:0;width:100%;margin:0 auto;box-shadow:0 4px 18px rgba(30,25,40,.06);border-radius:14px;overflow:hidden}
+th,td{padding:18px 18px;font-size:19.5px;text-align:center;color:var(--ink2);line-height:1.4}
+thead th{background:var(--thead);font-weight:800;color:var(--ink)}
+tbody tr{border-bottom:1px solid var(--tline)}
+tbody td{border-bottom:1px solid var(--tline)}
+tbody td:first-child{font-weight:800;color:var(--ink);text-align:left}
+td b{color:var(--red);font-weight:800}
+td .goal{color:var(--red);font-weight:800}
+td small{display:block;font-size:14px;color:var(--gray);font-weight:600;margin-top:3px}
+.note{font-size:16.5px;color:var(--gray);text-align:center;margin-top:15px;line-height:1.5}
+.note b{color:var(--body);font-weight:700}
+/* tight (dense-table slides) */
+.slide.tight .body{margin-top:36px}
+.slide.tight th,.slide.tight td{padding:14px 18px}
+.slide.tight .eyebrow{margin-bottom:12px}
+/* chevron */
+.chev{display:flex;margin:0 auto 40px;max-width:1160px}
+.chev .c{flex:1;color:#fff;font-weight:800;font-size:22px;padding:24px 8px 24px 32px;display:flex;align-items:center;justify-content:center;position:relative;
+  clip-path:polygon(0 0,calc(100% - 22px) 0,100% 50%,calc(100% - 22px) 100%,0 100%,22px 50%)}
+.chev .c:first-child{clip-path:polygon(0 0,calc(100% - 22px) 0,100% 50%,calc(100% - 22px) 100%,0 100%);padding-left:22px}
+.chev .c1{background:#33363a}.chev .c2{background:#7a7e84;margin-left:-14px}.chev .c3{background:var(--red);margin-left:-14px}
+/* split (photo + text) */
+.split{display:grid;gap:40px;align-items:center;margin:0 auto;max-width:1180px}
+.split.p46{grid-template-columns:1.15fr .85fr}
+.split.p64{grid-template-columns:.85fr 1.15fr}
+.photo{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 12px 34px rgba(30,25,40,.18);aspect-ratio:16/11}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo .ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.42))}
+.photo .cap{position:absolute;left:16px;bottom:14px;background:rgba(20,20,22,.62);backdrop-filter:blur(4px);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:8px 16px}
+.lead{font-size:26px;color:var(--body);line-height:1.5;text-align:left}
+.lead b{color:var(--ink);font-weight:800}
+.lead .red{font-weight:800}
+.blist{list-style:none;display:flex;flex-direction:column;gap:16px;text-align:left}
+.blist li{font-size:23px;color:var(--body);line-height:1.42;padding-left:30px;position:relative}
+.blist li:before{content:"";position:absolute;left:0;top:11px;width:13px;height:13px;border-radius:50%;background:var(--red)}
+.blist li b{color:var(--ink);font-weight:800}
+/* contrast (problem) */
+.cx2{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:stretch;margin:0 auto 38px;max-width:1160px}
+.cxc{border-radius:16px;padding:34px 32px;min-width:0}
+.cxc.a{background:#f3f4f6;border:1px solid #e4e7ea}
+.cxc.b{background:#fffafa;border:1px solid #f3c7c7;box-shadow:0 6px 20px rgba(225,46,46,.08)}
+.cxc .lb{font-size:15px;font-weight:800;letter-spacing:.02em;color:#fff;background:var(--charcoal);border-radius:999px;padding:7px 16px;display:inline-block;margin-bottom:16px}
+.cxc.b .lb{background:var(--red)}
+.cxc h4{font-size:27px;font-weight:800;color:var(--ink);line-height:1.24;margin-bottom:12px}
+.cxc.b h4{color:var(--red)}
+.cxc p{font-size:20px;color:var(--body);line-height:1.5}
+.cxc p b{color:var(--ink);font-weight:800}
+.cxarr{display:flex;align-items:center;color:#b3b8bf;font-size:34px;font-weight:900}
+/* mockup canvas shared */
+.mock{margin:0 auto;background:#fafbfc;border:1.5px dashed var(--wireln);border-radius:18px;padding:22px 24px;position:relative;max-width:1180px}
+.mbadge{position:absolute;top:-15px;left:26px;font-size:13.5px;font-weight:800;color:var(--gray);background:#eceef1;border:1px solid #dfe2e6;border-radius:7px;padding:5px 13px}
+.mcap{font-size:19px;color:var(--gray);text-align:center;margin-top:15px;line-height:1.45}
+.mcap b{color:var(--body);font-weight:700}
+/* feature layout: mockup left, explain right */
+.fx{display:grid;grid-template-columns:1.28fr .72fr;gap:34px;align-items:center;margin:0 auto;max-width:1200px}
+.fexp{text-align:left;display:flex;flex-direction:column;gap:16px}
+.fexp .step{display:flex;gap:14px;align-items:flex-start}
+.fexp .step .sn{flex:none;width:34px;height:34px;border-radius:9px;background:var(--charcoal);color:#fff;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}
+.fexp .step .sd{font-size:21px;color:var(--body);line-height:1.4}
+.fexp .step .sd b{color:var(--ink);font-weight:800}
+.fexp .kbar{background:var(--red-soft);border-left:6px solid var(--red);border-radius:11px;padding:16px 20px;font-size:20px;color:var(--ink2);line-height:1.44;font-weight:600}
+.fexp .kbar b{color:var(--red);font-weight:800}
+/* discovery feed mock */
+.feedhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.feedhd .ft{font-size:22px;font-weight:800;color:var(--ink)}
+.feedhd .ft b{color:var(--red)}
+.feedhd .fs{height:34px;width:210px;background:#eceef1;border:1px solid #dfe2e6;border-radius:999px;display:flex;align-items:center;padding:0 14px;color:var(--gray2);font-size:14px;font-weight:700}
+.fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fcard{background:#fff;border:1px solid #e6e9ed;border-radius:13px;overflow:hidden;box-shadow:0 3px 12px rgba(30,25,40,.05)}
+.fcard .fimg{height:96px;background:linear-gradient(135deg,#e7ebf0,#d7dde4);position:relative}
+.fcard .disc{position:absolute;top:9px;left:9px;background:var(--red);color:#fff;font-size:15px;font-weight:800;border-radius:7px;padding:4px 9px}
+.fcard .new{position:absolute;top:9px;right:9px;background:var(--charcoal);color:#fff;font-size:12px;font-weight:800;border-radius:6px;padding:4px 8px}
+.fcard .fb{padding:12px 13px 14px}
+.fcard .sk{height:12px;background:var(--wiredk);border-radius:4px;margin-bottom:8px}
+.fcard .sk.s{width:64%}
+.fcard .meta{display:flex;justify-content:space-between;margin-top:11px;font-size:14.5px;font-weight:800}
+.fcard .meta .tm{color:var(--red)}
+.fcard .meta .qt{color:var(--gray)}
+/* mystery box mock */
+.mboxwrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:24px;align-items:center}
+.mbox{background:linear-gradient(160deg,#2f3237,#232528);border-radius:18px;padding:30px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.mbox .qq{font-size:96px;font-weight:900;color:#fff;line-height:1;margin:6px 0 10px;text-shadow:0 6px 24px rgba(225,46,46,.4)}
+.mbox .qq span{color:var(--red)}
+.mbox .lab{font-size:20px;font-weight:800;letter-spacing:.04em;color:#c9cdd3}
+.mbox .gua{margin-top:16px;display:inline-flex;align-items:center;gap:9px;background:rgba(225,46,46,.16);border:1px solid rgba(225,46,46,.5);border-radius:999px;padding:9px 18px;font-size:17px;font-weight:800;color:#ffb3b3}
+.mbox .gua b{color:#fff}
+.mitems{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mitem{background:#fff;border:1px solid #e6e9ed;border-radius:12px;padding:16px 14px;box-shadow:0 3px 12px rgba(30,25,40,.05);text-align:center}
+.mitem .mc{width:46px;height:46px;border-radius:12px;background:#eef0f3;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+.mitem .mc svg{width:26px;height:26px;fill:var(--charcoal)}
+.mitem .ml{font-size:16px;font-weight:700;color:var(--body);line-height:1.3}
+.mitem .mq{font-size:13.5px;color:var(--gray);margin-top:4px}
+.mitem.q{border-style:dashed;border-color:var(--red);background:#fffafa}
+.mitem.q .mc{background:#fdeaea}.mitem.q .mc svg{fill:var(--red)}
+.mitem.q .ml{color:var(--red)}
+/* swipe deck mock */
+.swipewrap{display:flex;align-items:center;justify-content:center;gap:40px}
+.deckstack{position:relative;width:280px;height:340px}
+.scard{position:absolute;inset:0;background:#fff;border:1px solid #e6e9ed;border-radius:20px;box-shadow:0 10px 30px rgba(30,25,40,.14);overflow:hidden}
+.scard.s2{transform:rotate(-5deg) translateY(8px) scale(.96);opacity:.55;z-index:1}
+.scard.s3{transform:rotate(4deg) translateY(4px) scale(.93);opacity:.35;z-index:0}
+.scard.s1{z-index:2;transform:rotate(2deg)}
+.scard .simg{height:210px;background:linear-gradient(135deg,#e7ebf0,#d3dae2);position:relative}
+.scard .sdisc{position:absolute;top:12px;left:12px;background:var(--red);color:#fff;font-size:16px;font-weight:800;border-radius:8px;padding:5px 11px}
+.scard .sb{padding:16px 18px}
+.scard .ssk{height:14px;background:var(--wiredk);border-radius:4px;margin-bottom:9px}
+.scard .ssk.s{width:58%}
+.scard .schip{position:absolute;top:78px;right:20px;font-size:34px;font-weight:900;padding:6px 14px;border-radius:12px;border:3px solid;transform:rotate(12deg)}
+.scard .schip.yes{color:#1a9d5a;border-color:#1a9d5a;background:rgba(26,157,90,.08)}
+.swbtns{display:flex;flex-direction:column;gap:22px}
+.swbtn{display:flex;align-items:center;gap:14px;font-size:22px;font-weight:800}
+.swbtn .b{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;box-shadow:0 6px 18px rgba(30,25,40,.14)}
+.swbtn.pass .b{background:#fff;border:2px solid #d7dbe0;color:#8b9096}
+.swbtn.pass{color:var(--gray)}
+.swbtn.like .b{background:var(--red);color:#fff}
+.swbtn.like{color:var(--red)}
+/* flash deal mock */
+.flashwrap{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:center}
+.flashcard{background:#fff;border:1px solid #f0c9c9;border-radius:18px;padding:26px 30px;box-shadow:0 8px 26px rgba(225,46,46,.09)}
+.flashcard .ftop{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.flashcard .ftop .lv{background:var(--red);color:#fff;font-size:15px;font-weight:800;border-radius:999px;padding:6px 14px;letter-spacing:.02em}
+.flashcard .ftop .tm{margin-left:auto;font-size:20px;font-weight:800;color:var(--red);font-variant-numeric:tabular-nums}
+.flashcard .fttl{height:18px;background:var(--wiredk);border-radius:5px;width:70%;margin-bottom:10px}
+.flashcard .fttl.s{width:46%;height:15px}
+.flashcard .price{font-size:38px;font-weight:900;color:var(--ink);margin:14px 0 6px;font-variant-numeric:tabular-nums}
+.flashcard .price s{color:var(--gray2);font-size:22px;font-weight:600;margin-left:10px}
+.flashcard .price em{color:var(--red);font-style:normal;font-weight:900;margin-left:10px}
+.stockbar{margin-top:18px}
+.stockbar .sl{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:8px}
+.stockbar .sl .a{color:var(--red)}.stockbar .sl .b{color:var(--gray)}
+.stocktrack{height:16px;background:#eceef1;border-radius:999px;overflow:hidden}
+.stocktrack i{display:block;height:100%;width:82%;background:linear-gradient(90deg,var(--red),#f2685f);border-radius:999px}
+/* dex / stamp mock */
+.dexwrap{display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:center}
+.dexgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.stamp{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed #d7dbe0;color:var(--gray2);background:#fafbfc}
+.stamp svg{width:34px;height:34px;fill:currentColor}
+.stamp .sl{font-size:13px;font-weight:800}
+.stamp.on{border:2px solid var(--charcoal);background:var(--charcoal);color:#fff}
+.stamp.hot{border:2px solid var(--red);background:var(--red);color:#fff}
+.dexbar{margin-top:4px}
+.dexbar .dl{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:10px}
+.dexbar .dl b{color:var(--red)}
+.dextrack{height:18px;background:#eceef1;border-radius:999px;overflow:hidden}
+.dextrack i{display:block;height:100%;width:66%;background:linear-gradient(90deg,var(--charcoal),var(--red));border-radius:999px}
+.dexnote{font-size:18px;color:var(--body);line-height:1.5;text-align:left;margin-top:16px}
+.dexnote b{color:var(--ink);font-weight:800}
+/* implementation stack */
+.stack{display:flex;flex-direction:column;gap:16px;margin:0 auto 30px;max-width:1120px}
+.layer{border-radius:14px;padding:26px 30px;display:flex;align-items:center;gap:22px}
+.layer.core{background:#f3f4f6;border:1px solid #e2e5e9}
+.layer.own{background:#fffafa;border:1px solid #f3c7c7}
+.layer .lt{flex:none;font-size:16px;font-weight:800;color:#fff;background:var(--charcoal);border-radius:9px;padding:11px 18px;min-width:150px;text-align:center;line-height:1.3}
+.layer.own .lt{background:var(--red)}
+.layer .ld{font-size:22px;color:var(--body);line-height:1.44}
+.layer .ld b{color:var(--ink);font-weight:800}
+.layer.own .ld b{color:var(--red)}
+.layer .arrsm{font-size:26px;color:#b3b8bf;text-align:center;margin:2px auto}
+/* icons grid (why me) */
+.icons{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:0 auto}
+.ic{text-align:center;border:1px solid #edf0f4;border-radius:16px;padding:34px 26px;min-width:0;box-shadow:0 4px 18px rgba(30,25,40,.06);background:#fff;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ic .ig{width:62px;height:62px;border-radius:16px;background:#f3f4f6;display:flex;align-items:center;justify-content:center}
+.ic .ig svg{width:36px;height:36px;fill:var(--charcoal)}
+.ic h5{font-size:22px;font-weight:800;color:var(--ink);line-height:1.22}
+.ic p{font-size:18px;color:var(--body);line-height:1.48}
+.ic p b{color:var(--red);font-weight:800}
+/* cover */
+.cover{justify-content:center;padding:70px 72px;overflow:hidden;
+  background:linear-gradient(135deg,#ffffff 0%,#ffffff 58%,#fdf1f1 100%)}
+.swoosh{position:absolute;right:-150px;bottom:-230px;width:840px;height:840px;border-radius:50%;background:var(--swoosh);z-index:0}
+.swoosh:after{content:"";position:absolute;right:150px;bottom:150px;width:640px;height:640px;border-radius:50%;background:#fff}
+.covtre{position:absolute;right:38px;top:50%;transform:translateY(-46%);width:452px;z-index:1;mix-blend-mode:multiply;opacity:.96;pointer-events:none}
+.cover .b{position:relative;z-index:2;max-width:760px}
+.cover .kick{font-size:19px;font-weight:800;color:var(--red);letter-spacing:.06em;margin-bottom:20px}
+.cover .k1{font-size:27px;font-weight:700;color:var(--ink2);line-height:1.4}
+.cover .k1 b{color:var(--red);font-weight:800}
+.cover .k2{font-size:82px;font-weight:900;color:var(--ink);letter-spacing:-.03em;margin:20px 0 16px;line-height:1.02}
+.cover .en{font-size:24px;font-weight:600;color:var(--body)}
+.cover .who{font-size:22px;color:var(--gray);margin-top:44px;font-weight:600}
+.cover .who b{color:var(--ink);font-weight:800}
+.logo{font-weight:900;color:var(--blue);letter-spacing:-.02em}
+/* closing */
+.close .big{font-size:52px;font-weight:900;color:var(--ink);line-height:1.16;letter-spacing:-.02em;text-align:left}
+.close .big .red{color:var(--red)}
+#bar{position:fixed;top:0;left:0;height:3px;background:var(--red);z-index:20;transition:width .25s}
+.hint{position:fixed;right:16px;bottom:12px;z-index:20;font-size:12px;color:#6b7076;background:rgba(255,255,255,.75);border-radius:8px;padding:6px 11px}
+</style>
+</head>
+<body>
+<div id="fit"><div id="deck">
+
+<!-- 1 · COVER -->
+<section class="slide on cover">
+  <div class="swoosh"></div>
+  <img class="covtre" src="assets/photos/treasure_illust.jpg" alt="보물상자">
+  <div class="hd"><span class="sec" style="letter-spacing:.04em">PITCH · 발견형 커머스 제안</span><span class="pg logo">FIMASIA</span></div>
+  <div class="b">
+    <div class="kick">핌아시아 이커머스 기획 제안</div>
+    <div class="k1">떠리몰을 ‘검색하는 몰’에서 <b>둘러보다 건지는 놀이터</b>로</div>
+    <div class="k2">떠리 보물찾기</div>
+    <div class="en">Treasure Hunt Commerce · 둘러보다 건지는 발견형 커머스 제안</div>
+    <div class="who">핌아시아 이커머스 기획 제안 · <b>정치성</b></div>
+  </div>
+</section>
+
+<!-- 2 · 문제 -->
+<section class="slide">
+  <div class="hd"><span class="sec">문제</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">밖에서 본 관찰 · 입사 후 데이터로 검증하겠습니다</div>
+    <div class="headline">떠리몰은 <span class="red">발견형 상품</span>을 쥐고도,<br>화면은 아직 <span class="red">목적형</span>에 머물러 있습니다</div>
+  </div>
+  <div class="body">
+    <div class="cx2">
+      <div class="cxc a">
+        <span class="lb">지금의 화면</span>
+        <h4>‘무엇을 살지 정한 사람’용</h4>
+        <p>검색창·카테고리 중심 — <b>목적이 있어야</b> 쓰는 몰. 임박 재고는 검색 뒤에 숨어 있습니다.</p>
+      </div>
+      <div class="cxarr">→</div>
+      <div class="cxc b">
+        <span class="lb">빠진 경험</span>
+        <h4>‘심심할 때 여는 앱’이 아니다</h4>
+        <p><b>무목적 방문·둘러보기</b> 경험이 없어, 매일 바뀌는 임박 보물이 발견되지 못합니다.</p>
+      </div>
+    </div>
+    <div class="paybar"><span class="tag">문제</span><span class="t">하루 <b>약 35만 명</b>이 오지만(언론 기준), 대부분 ‘살 것을 정하고’ 검색으로 옵니다 — <b>둘러보다 건지는 경험</b>이 비어 있습니다.</span></div>
+  </div>
+</section>
+
+<!-- 3 · 기회(시장) -->
+<section class="slide">
+  <div class="hd"><span class="sec">기회 · 시장</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">커머스의 무게중심 이동 · 외부 수치는 ‘ⓔ 업계 추정’</div>
+    <div class="headline">쇼핑이 <span class="red">검색(목적형)</span>에서 <span class="red">발견형</span>으로 이동한다</div>
+  </div>
+  <div class="body">
+    <div class="cards c3" style="max-width:1160px;margin-bottom:24px">
+      <div class="card hot">
+        <span class="num">TikTok Shop ⓔ</span>
+        <div class="fig">71%</div>
+        <div class="kt">쇼퍼가 <b>피드에서 발견해 구매</b> · 67%가 “살 생각 없었는데 샀다” · 숏폼이 매출 <b>약 60%</b> 견인</div>
+      </div>
+      <div class="card">
+        <span class="num">Pinterest ⓔ</span>
+        <div class="fig">80%</div>
+        <div class="kt">이용자가 <b>새 제품을 발견</b> · 구매의도는 소셜 평균의 <b>약 5.6배</b></div>
+      </div>
+      <div class="card">
+        <span class="num">국내</span>
+        <div class="fig">발견 탭</div>
+        <div class="kt">네이버가 <b>‘발견’ 피드</b> 강화 · ‘발견형 쇼핑’을 트렌드로 지목(토스페이먼츠)</div>
+      </div>
+    </div>
+    <div class="note">ⓔ 외부 수치는 마케팅·애그리게이터 <b>재인용(업계 추정)</b>이며 원 출처·시점 확인이 필요합니다. 국내 사례는 공개 보도·리포트 기준.</div>
+  </div>
+</section>
+
+<!-- 4 · 인사이트 -->
+<section class="slide">
+  <div class="hd"><span class="sec">인사이트</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">약점을 자산으로 · 코스트코 ‘트레저 헌트’ 원리</div>
+    <div class="headline">떠리몰의 약점(<span class="red">불안정한 재고</span>)이<br>발견형에선 <span class="red">최대 자산</span>이 됩니다</div>
+  </div>
+  <div class="body">
+    <div class="split p46">
+      <div>
+        <div class="lead">코스트코는 약 <b>3,700 SKU</b>만 계속 회전시켜 ‘갈 때마다 다른 보물’을 만듭니다 <span style="font-size:16px;color:var(--gray2)">(ⓔ 업계 추정)</span>. 떠리몰의 <b class="red">매일 바뀌는 임박 재고</b>는 그 자체로 <b>매일 새로 채워지는 보물 상자</b>입니다.</div>
+        <ul class="blist" style="margin-top:20px">
+          <li><b>희소·저가·충동성</b> — 발견형 커머스에 최적화된 자산</li>
+          <li>관건은 회전 재고를 <b>검색 뒤에 숨기지 않는 것</b></li>
+          <li>홈 첫 화면을 <b class="red">‘발견’</b>으로 — 검색은 그다음</li>
+        </ul>
+      </div>
+      <div class="photo">
+        <img src="assets/photos/market_night.jpg" alt="시장 진열">
+        <div class="ov"></div>
+        <div class="cap">매일 바뀌는 재고 = 매일 새로운 보물</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · 컨셉 + UX 5원칙 -->
+<section class="slide">
+  <div class="hd"><span class="sec">컨셉 · UX 5원칙</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">컨셉 정의와 설계 원칙</div>
+    <div class="headline">‘떠리 보물찾기’ — <span class="red">둘러보다 우연히 건지는</span> 발견형 커머스</div>
+  </div>
+  <div class="body">
+    <table style="max-width:1170px">
+      <thead><tr><th style="width:24%">UX 원칙</th><th style="width:40%">무엇을</th><th style="width:36%">왜</th></tr></thead>
+      <tbody>
+        <tr><td>둘러보기를 홈으로</td><td>검색창이 아니라 <b>발견 피드</b>가 첫 화면</td><td>무목적 방문을 습관으로</td></tr>
+        <tr><td>진짜 희소성만</td><td>카운트다운은 <b>소비기한·잔여수량 실연동</b>에만</td><td>가짜 긴박감은 신뢰를 깎는다</td></tr>
+        <tr><td>구조화된 우연</td><td><b>취향 근처의 의외성</b> (완전 랜덤 아님)</td><td>관련성과 놀라움의 균형</td></tr>
+        <tr><td>발견을 습관으로</td><td><b>도감·스탬프·위클리</b> 재방문 루프</td><td>발견 자체가 리워드</td></tr>
+        <tr><td>정직이 전제</td><td><b>소비기한·결함을 먼저 고지</b></td><td>임박 커머스의 생명은 신뢰</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 6 · 벤치마킹 -->
+<section class="slide tight">
+  <div class="hd"><span class="sec">벤치마킹</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">발견형은 이미 이긴 공식 · 외부 수치는 ‘ⓔ 업계 추정’</div>
+    <div class="headline">발견형은 이미 <span class="red">검증된 승리 공식</span>입니다</div>
+  </div>
+  <div class="body">
+    <table style="max-width:1200px">
+      <thead><tr><th style="width:16%">사례</th><th style="width:30%">발견 메커니즘</th><th style="width:28%">효과·지표 <span style="font-weight:700;color:var(--gray)">ⓔ</span></th><th style="width:26%">떠리몰 적용</th></tr></thead>
+      <tbody>
+        <tr><td>핀둬둬</td><td>팀 구매 + 과수원 게임</td><td>과수원 게임 DAU 약 <b>1,100만</b></td><td>임박 재고 팀구매·미션</td></tr>
+        <tr><td>TikTok·숏폼</td><td>피드 몰입·충동 발견</td><td>매출 <b>약 60%</b> 숏폼 견인</td><td>보물 피드·짧은 발견 카드</td></tr>
+        <tr><td>Pinterest</td><td>저장(Save)=구매의도</td><td>구매의도 소셜 <b>5.6배</b></td><td>찜=재입고·위시 알림</td></tr>
+        <tr><td>오늘의집</td><td>콘텐츠에 제품 태그</td><td>약 <b>2000배</b> 성장</td><td>발견 콘텐츠에 상품 연결</td></tr>
+        <tr><td>팝마트 블라인드박스</td><td>변동보상·수집</td><td>’24 매출 <b>약 2배</b>·라부부 1,200%+</td><td>보물상자(미스터리 번들)</td></tr>
+        <tr><td>길트(플래시세일)</td><td>시간제한 특가</td><td>회원제 반짝딜 리텐션</td><td>지금 뜬 보물(반짝딜)</td></tr>
+        <tr><td>토스·당근</td><td>게임화·수집</td><td>습관형 리텐션 엔진</td><td>보물 도감·스탬프</td></tr>
+      </tbody>
+    </table>
+    <div class="note">ⓔ 외부 수치는 마케팅·애그리게이터 <b>재인용(업계 추정)</b> — 원 출처·시점 확인 필요. 국내 유사 서비스(라스트오더·리씽크 등)와는 별개 회사입니다.</div>
+  </div>
+</section>
+
+<!-- 7 · 기능1 · 오늘의 보물 피드 -->
+<section class="slide">
+  <div class="hd"><span class="sec">기능 ① · 오늘의 보물 피드</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">개념 화면 · 검색 없이 스크롤하는 발견</div>
+    <div class="headline sm"><span class="red">오늘의 보물 피드</span> — 검색창 대신 ‘발견 카드 스트림’</div>
+  </div>
+  <div class="body" style="margin-top:30px">
+    <div class="fx">
+      <div class="mock">
+        <span class="mbadge">개념 목업 · Wireframe</span>
+        <div class="feedhd">
+          <div class="ft">오늘 새로 뜬 보물 <b>128</b>개</div>
+          <div class="fs">🔍 검색은 여기 (기본 아님)</div>
+        </div>
+        <div class="fgrid">
+          <div class="fcard"><div class="fimg"><span class="disc">-62%</span><span class="new">NEW</span></div><div class="fb"><div class="sk"></div><div class="sk s"></div><div class="meta"><span class="tm">⏳ 6시간</span><span class="qt">3개 남음</span></div></div></div>
+          <div class="fcard"><div class="fimg"><span class="disc">-45%</span><span class="new">NEW</span></div><div class="fb"><div class="sk"></div><div class="sk s"></div><div class="meta"><span class="tm">⏳ 12시간</span><span class="qt">7개 남음</span></div></div></div>
+          <div class="fcard"><div class="fimg"><span class="disc">-70%</span><span class="new">NEW</span></div><div class="fb"><div class="sk"></div><div class="sk s"></div><div class="meta"><span class="tm">⏳ 3시간</span><span class="qt">1개 남음</span></div></div></div>
+          <div class="fcard"><div class="fimg"><span class="disc">-38%</span><span class="new">NEW</span></div><div class="fb"><div class="sk"></div><div class="sk s"></div><div class="meta"><span class="tm">⏳ 1일</span><span class="qt">12개 남음</span></div></div></div>
+        </div>
+        <div class="mcap">할인율 · 잔여시간 · 잔여수량이 카드에 그대로 — <b>스크롤만으로 발견</b> · 실제 데이터 아님</div>
+      </div>
+      <div class="fexp">
+        <div class="step"><span class="sn">1</span><span class="sd">홈 = 검색창이 아니라 <b>발견 피드</b>. ‘오늘 새로 뜬 보물’ 카운터로 방문 이유를 만든다</span></div>
+        <div class="step"><span class="sn">2</span><span class="sd">카드마다 <b>할인율·잔여시간·잔여수량</b> — 매일 다른 라인업</span></div>
+        <div class="kbar"><b>구현</b> — 샵바이 API로 상품·재고를 읽고, 자체 프런트가 <b>발견 랭킹</b>으로 재배열</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · 기능2 · 보물상자 -->
+<section class="slide">
+  <div class="hd"><span class="sec">기능 ② · 보물상자</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">개념 화면 · 변동 보상의 힘</div>
+    <div class="headline sm"><span class="red">보물상자</span> — 임박 재고 테마 랜덤 번들 ‘떠리 서프라이즈’</div>
+  </div>
+  <div class="body" style="margin-top:26px">
+    <div class="fx">
+      <div class="mock">
+        <span class="mbadge">개념 목업 · Wireframe</span>
+        <div class="mboxwrap">
+          <div class="mbox">
+            <div class="lab">떠리 서프라이즈 BOX</div>
+            <div class="qq"><span>?</span></div>
+            <div class="gua">최소 보장 절감액 <b>2만원+</b></div>
+          </div>
+          <div class="mitems">
+            <div class="mitem"><span class="mc"><svg viewBox="0 0 24 24"><path d="M5 4h14l-1 4H6L5 4zm1 6h12v9a1 1 0 01-1 1H7a1 1 0 01-1-1v-9zm3 3v4h6v-4H9z"/></svg></span><div class="ml">간식·베이커리</div><div class="mq">소비기한 D-4</div></div>
+            <div class="mitem"><span class="mc"><svg viewBox="0 0 24 24"><path d="M7 3h10l3 5-8 13L4 8l3-5zm.6 2L6 7.5h12L16.4 5H7.6z"/></svg></span><div class="ml">뷰티 리퍼</div><div class="mq">미개봉</div></div>
+            <div class="mitem q"><span class="mc"><svg viewBox="0 0 24 24"><path d="M11 2h2v3h-2V2zM4.9 6.3l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zM12 8a4 4 0 014 4c0 1.7-1 2.6-1.7 3.3-.5.5-.8.9-.8 1.7h-3c0-1.7.9-2.6 1.6-3.3.5-.5.9-.9.9-1.7a2 2 0 10-4 0H8a4 4 0 014-4zm-1.5 11h3v2h-3v-2z"/></svg></span><div class="ml">랜덤 보너스</div><div class="mq">?</div></div>
+            <div class="mitem"><span class="mc"><svg viewBox="0 0 24 24"><path d="M3 6h18v4H3V6zm1 6h16v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm7-8h2v2h-2V4z"/></svg></span><div class="ml">생활·리빙</div><div class="mq">유통 임박</div></div>
+            <div class="mitem"><span class="mc"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.3L17.5 20 12 16.8 6.5 20l1-6.8L3 8.9 9 8l3-6z"/></svg></span><div class="ml">희소 아이템</div><div class="mq">한정</div></div>
+            <div class="mitem q"><span class="mc"><svg viewBox="0 0 24 24"><path d="M20 12v7a1 1 0 01-1 1h-6v-8h7zM11 20H5a1 1 0 01-1-1v-7h7v8zM21 7v3H3V7h3.2A3 3 0 019 3l3 2 3-2a3 3 0 012.8 4H21z"/></svg></span><div class="ml">깜짝 추가</div><div class="mq">?</div></div>
+          </div>
+        </div>
+        <div class="mcap">무엇이 들었는지는 열어봐야 안다 — <b>기대감이 곧 재미</b> · 실제 데이터 아님</div>
+      </div>
+      <div class="fexp">
+        <div class="step"><span class="sn">1</span><span class="sd"><b>변동 보상</b>은 확정할인보다 강한 기대감 (Too Good To Go ‘매직백’ 원리)</span></div>
+        <div class="step"><span class="sn">2</span><span class="sd">임박 재고를 <b>테마 번들</b>로 묶어 소진 — 남는 재고를 재미로 전환</span></div>
+        <div class="kbar"><b>정직 원칙</b> — <b>최소 보장 절감액</b>과 <b>잔여 소비기한</b>을 반드시 먼저 고지</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · 기능3 · 스와이프 탐색 -->
+<section class="slide">
+  <div class="hd"><span class="sec">기능 ③ · 스와이프 탐색</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">개념 화면 · 마찰 없는 무목적 브라우징</div>
+    <div class="headline sm"><span class="red">스와이프 탐색</span> ‘오늘의 픽’ — 좌=패스 / 우=찜</div>
+  </div>
+  <div class="body" style="margin-top:26px">
+    <div class="fx">
+      <div class="mock">
+        <span class="mbadge">개념 목업 · Wireframe</span>
+        <div class="swipewrap">
+          <div class="swbtns">
+            <div class="swbtn pass"><span class="b">✕</span>패스</div>
+          </div>
+          <div class="deckstack">
+            <div class="scard s3"></div>
+            <div class="scard s2"></div>
+            <div class="scard s1">
+              <div class="simg"><span class="sdisc">-58%</span></div>
+              <div class="schip yes">찜!</div>
+              <div class="sb"><div class="ssk"></div><div class="ssk s"></div></div>
+            </div>
+          </div>
+          <div class="swbtns">
+            <div class="swbtn like"><span class="b">♥</span>찜</div>
+          </div>
+        </div>
+        <div class="mcap">한 장씩 넘기며 <b>고민 없이 훑기</b> — 세션 끝에 찜 리캡 → 장바구니 · 실제 데이터 아님</div>
+      </div>
+      <div class="fexp">
+        <div class="step"><span class="sn">1</span><span class="sd">카드덱을 <b>좌=패스 / 우=찜</b>으로 넘기는 무목적 브라우징</span></div>
+        <div class="step"><span class="sn">2</span><span class="sd">‘살지 말지’ 부담 없이 <b>취향 신호</b>만 쌓여 발견 랭킹이 학습된다</span></div>
+        <div class="kbar"><b>세션 리캡</b> — 넘기는 재미의 끝에서 <b>찜 목록 → 장바구니</b>로 자연 전환</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · 기능4 · 지금 뜬 보물 -->
+<section class="slide">
+  <div class="hd"><span class="sec">기능 ④ · 지금 뜬 보물</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">개념 화면 · 정직한 FOMO</div>
+    <div class="headline sm"><span class="red">지금 뜬 보물</span> — 마감 직전 최저가 ‘반짝딜’</div>
+  </div>
+  <div class="body" style="margin-top:26px">
+    <div class="fx">
+      <div class="mock">
+        <span class="mbadge">개념 목업 · Wireframe</span>
+        <div class="flashwrap">
+          <div class="flashcard">
+            <div class="ftop"><span class="lv">⚡ 지금 뜬 보물</span><span class="tm">02:41:08</span></div>
+            <div class="fttl"></div><div class="fttl s"></div>
+            <div class="price">9,900원 <s>26,000원</s><em>-62%</em></div>
+            <div class="stockbar">
+              <div class="sl"><span class="a">82% 소진</span><span class="b">18개 남음</span></div>
+              <div class="stocktrack"><i></i></div>
+            </div>
+          </div>
+          <div class="fexp" style="gap:14px">
+            <div class="step"><span class="sn">⚡</span><span class="sd"><b>랜덤 시간대</b>에 열리는 반짝딜 — 앱을 다시 열 이유</span></div>
+            <div class="step"><span class="sn">✓</span><span class="sd">타이머·소진 바가 <b>진짜 재고에 연동</b> — 가짜 긴박감 아님</span></div>
+          </div>
+        </div>
+        <div class="mcap">실시간 <b>재고 소진 바</b> = 조작 없는 정직한 긴박감 · 실제 데이터 아님</div>
+      </div>
+      <div class="fexp">
+        <div class="step"><span class="sn">1</span><span class="sd">마감 직전 재고를 <b>랜덤 시간대 최저가</b>로 풀어 소진</span></div>
+        <div class="step"><span class="sn">2</span><span class="sd">‘언제 뜰지 모름’이 <b>재방문·앱 재실행</b>을 만든다</span></div>
+        <div class="kbar"><b>정직한 FOMO</b> — 카운트다운·소진율은 <b>실제 소비기한·재고에만</b> 연동</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · 기능5 · 보물 도감·스탬프 -->
+<section class="slide">
+  <div class="hd"><span class="sec">기능 ⑤ · 보물 도감·스탬프</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">개념 화면 · 재방문 엔진</div>
+    <div class="headline sm"><span class="red">보물 도감 · 스탬프</span> — 발견을 수집으로 만든다</div>
+  </div>
+  <div class="body" style="margin-top:26px">
+    <div class="fx">
+      <div class="mock">
+        <span class="mbadge">개념 목업 · Wireframe</span>
+        <div class="dexwrap">
+          <div class="dexgrid">
+            <div class="stamp on"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.3L17.5 20 12 16.8 6.5 20l1-6.8L3 8.9 9 8l3-6z"/></svg><span class="sl">간식</span></div>
+            <div class="stamp on"><svg viewBox="0 0 24 24"><path d="M5 4h14l-1 4H6L5 4zm1 6h12v9H6v-9z"/></svg><span class="sl">베이커리</span></div>
+            <div class="stamp on"><svg viewBox="0 0 24 24"><path d="M7 3h10l3 5-8 13L4 8l3-5z"/></svg><span class="sl">뷰티</span></div>
+            <div class="stamp hot"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.3L17.5 20 12 16.8 6.5 20l1-6.8L3 8.9 9 8l3-6z"/></svg><span class="sl">희소!</span></div>
+            <div class="stamp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5l4 2-.8 1.7L11 13V7h2z"/></svg><span class="sl">?</span></div>
+            <div class="stamp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5l4 2-.8 1.7L11 13V7h2z"/></svg><span class="sl">?</span></div>
+            <div class="stamp on"><svg viewBox="0 0 24 24"><path d="M3 6h18v4H3V6zm1 6h16v7H4v-7z"/></svg><span class="sl">리빙</span></div>
+            <div class="stamp on"><svg viewBox="0 0 24 24"><path d="M12 3l9 4v6c0 5-3.5 7.5-9 9-5.5-1.5-9-4-9-9V7l9-4z"/></svg><span class="sl">한정</span></div>
+            <div class="stamp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5l4 2-.8 1.7L11 13V7h2z"/></svg><span class="sl">?</span></div>
+            <div class="stamp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5l4 2-.8 1.7L11 13V7h2z"/></svg><span class="sl">?</span></div>
+            <div class="stamp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5l4 2-.8 1.7L11 13V7h2z"/></svg><span class="sl">?</span></div>
+            <div class="stamp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5l4 2-.8 1.7L11 13V7h2z"/></svg><span class="sl">?</span></div>
+          </div>
+          <div>
+            <div class="dexbar">
+              <div class="dl">이번 주 도감 <b>7 / 12</b></div>
+              <div class="dextrack"><i></i></div>
+            </div>
+            <div class="dexnote">구매·발견을 <b>도감·스탬프</b>로 시각화 — 이미 채운 칸이 다음 방문을 부른다 (선지급 진행 효과).</div>
+            <div class="dexnote" style="color:var(--gray);font-size:16px">+ 2차 : <b>친구가 건진 보물</b> 소셜 피드</div>
+          </div>
+        </div>
+        <div class="mcap">발견 자체가 리워드 — <b>수집 욕구가 재방문 엔진</b>이 된다 · 실제 데이터 아님</div>
+      </div>
+      <div class="fexp">
+        <div class="step"><span class="sn">1</span><span class="sd">발견·구매를 <b>수집형 도감</b>으로 — 채운 칸이 다음 방문을 만든다</span></div>
+        <div class="step"><span class="sn">2</span><span class="sd">위클리 스탬프·희소 배지로 <b>습관 루프</b> 형성</span></div>
+        <div class="kbar"><b>재방문 엔진</b> — 발견을 ‘모으는 재미’로 바꿔 리텐션을 만든다</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · 구현 현실성 -->
+<section class="slide">
+  <div class="hd"><span class="sec">구현 현실성</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">커스텀 최소 · 단계 출시 · 입사 후 데이터로 우선순위 확정</div>
+    <div class="headline">샵바이 코어는 <span class="red">그대로</span>, 발견·게임화 <span class="red">레이어만 자체 프런트</span></div>
+  </div>
+  <div class="body">
+    <div class="stack">
+      <div class="layer own">
+        <span class="lt">자체 Next.js<br>프런트</span>
+        <span class="ld"><b>발견 랭킹 · 미스터리 UI · 게임화(도감·스탬프) · 이벤트 로깅</b> — 새로 만드는 건 이 얇은 발견 레이어뿐</span>
+      </div>
+      <div class="arrsm">▲ 읽기 · 주문 연동 API</div>
+      <div class="layer core">
+        <span class="lt">샵바이 코어<br>(NHN ShopBy)</span>
+        <span class="ld"><b>상품 · 재고 · 주문 · 정산</b>은 표준에 위임 — 검증된 커머스 엔진을 그대로 활용</span>
+      </div>
+    </div>
+    <div class="chev" style="margin-bottom:0">
+      <div class="c c1">MVP · 피드 + 보물상자 + 스와이프</div>
+      <div class="c c2">2차 · 도감 + 스탬프</div>
+      <div class="c c3">3차 · 개인화 + 소셜</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · 지표 · 로드맵 -->
+<section class="slide tight">
+  <div class="hd"><span class="sec">지표 · 로드맵</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">측정은 입사 후 · 숫자는 방향, 목표는 실측 기준선 위에서 확정</div>
+    <div class="headline">무엇으로 <span class="red">이겼다고 말할 것인가</span></div>
+  </div>
+  <div class="body">
+    <table style="max-width:1180px;margin-bottom:20px">
+      <thead><tr><th style="width:30%">KPI</th><th style="width:24%">방향</th><th style="width:46%">의미 · 완료기준</th></tr></thead>
+      <tbody>
+        <tr><td>무목적 방문율</td><td><span class="goal">↑</span><small>측정 후 확정</small></td><td>검색 없이 발견 피드로 진입한 세션 비중</td></tr>
+        <tr><td>세션 스크롤 깊이</td><td><span class="goal">↑</span><small>측정 후 확정</small></td><td>둘러보기 몰입도 — 발견 카드 소비량</td></tr>
+        <tr><td>발견 기여 매출 비중</td><td><span class="goal">↑</span><small>측정 후 확정</small></td><td>검색이 아닌 발견 경로에서 발생한 매출</td></tr>
+        <tr><td>재방문율</td><td><span class="goal">↑</span><small>측정 후 확정</small></td><td>도감·반짝딜이 만드는 습관 루프</td></tr>
+        <tr><td>재구매율</td><td><span class="goal">↑</span><small>기준선 66% (공개)</small></td><td>발견형 확장이 재구매를 끌어올리는가</td></tr>
+      </tbody>
+    </table>
+    <div class="flow">
+      <div class="node on">1단계 · 저비용 검증</div><span class="arw">→</span>
+      <div class="node">2단계 · 발견 기능 확장</div><span class="arw">→</span>
+      <div class="node">3단계 · 개인화 · 소셜</div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · 클로징 · 왜 저인가 -->
+<section class="slide close">
+  <div class="hd"><span class="sec">클로징 · 왜 저인가</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">기획으로 설계하고, AI로 바로 만들어 검증합니다</div>
+    <div class="headline sm">왜 <span class="red">저인가</span></div>
+  </div>
+  <div class="body" style="margin-top:34px">
+    <div class="split p64">
+      <div class="photo">
+        <img src="assets/photos/shopping_flatlay.jpg" alt="온라인 쇼핑">
+        <div class="ov"></div>
+        <div class="cap">발견 → 구매 → 재방문의 루프</div>
+      </div>
+      <div>
+        <div class="icons" style="margin-bottom:24px">
+          <div class="ic"><span class="ig"><svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 011 1v11a1 1 0 01-1 1h-6l-3 3-3-3H4a1 1 0 01-1-1V5a1 1 0 011-1zm3 5v2h10V9H7zm0 3.5V14h7v-1.5H7z"/></svg></span><h5>서비스·플랫폼 기획</h5><p>0→1 설계 · 화면·정책·지표까지</p></div>
+          <div class="ic"><span class="ig"><svg viewBox="0 0 24 24"><path d="M3 3h18v4H3V3zm0 6h11v12H3V9zm13 0h5v12h-5V9z"/></svg></span><h5>데이터 기반 UX</h5><p>가설→실험→지표로 검증</p></div>
+          <div class="ic"><span class="ig"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span><h5>AI로 즉시 구현</h5><p><b>동작 프로토타입</b>을 바로 제출</p></div>
+        </div>
+        <div class="big">떠리몰의 임박 재고를,<br><span class="red">매일 열어보고 싶은 보물 상자</span>로.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div></div>
+<div id="bar"></div>
+<div class="hint">← / → · Space · F 전체화면</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+const fit=document.getElementById('fit');
+function scale(){const s=Math.min(innerWidth/1280,innerHeight/720);fit.style.transform=`translate(-50%,-50%) scale(${s})`;}
+slides.forEach((s,k)=>{const pg=s.querySelector('.pg:not(.logo)');if(pg)pg.textContent=String(k+1).padStart(2,'0');});
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';}
+addEventListener('keydown',e=>{
+  if(['ArrowRight',' ','PageDown'].includes(e.key)){show(i+1);e.preventDefault();}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){show(i-1);e.preventDefault();}
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(slides.length-1);}});
+addEventListener('click',e=>{if(e.target.closest('a'))return;show(i+(e.clientX>innerWidth/2?1:-1));});
+let x0=null;addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)show(i+(dx<0?1:-1));x0=null;});
+addEventListener('resize',scale);scale();
+const s0=parseInt(new URLSearchParams(location.search).get('s'));
+show(Number.isFinite(s0)?s0:0);
+</script>
+</body>
+</html>
