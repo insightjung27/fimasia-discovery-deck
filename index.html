@@ -287,6 +287,38 @@ td b{color:var(--red);font-weight:800}
 .close .sub{font-size:20px;color:var(--body);line-height:1.5;margin-top:16px;text-align:left}
 .close .sub b{color:var(--ink);font-weight:800}
 .barstitle{font-size:17px;font-weight:800;color:var(--gray);margin-bottom:14px;text-align:center}
+/* lean canvas */
+.lc{display:grid;width:100%;max-width:1176px;margin:0 auto;gap:7px;
+  grid-template-columns:repeat(5,1fr);grid-template-rows:160px 160px 100px;
+  grid-template-areas:
+    "prob sol  uvp adv  cust"
+    "prob met  uvp chan cust"
+    "cost cost cost rev  rev";}
+.lc-cell{border:1px solid var(--wireln);border-radius:9px;padding:11px 13px;background:#fff;
+  display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden}
+.lc-cell.prob{grid-area:prob}.lc-cell.sol{grid-area:sol}.lc-cell.met{grid-area:met}
+.lc-cell.uvp{grid-area:uvp}.lc-cell.adv{grid-area:adv}.lc-cell.chan{grid-area:chan}
+.lc-cell.cust{grid-area:cust}.lc-cell.cost{grid-area:cost}.lc-cell.rev{grid-area:rev}
+.lc-h{font-size:17px;font-weight:800;color:var(--ink);line-height:1.12;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.lc-h .no{color:var(--red);font-weight:900;font-size:18px}
+.lc-h em{font-style:normal;font-size:11px;font-weight:800;color:var(--gray2);letter-spacing:.03em;text-transform:uppercase}
+.lc-ul{list-style:none;display:flex;flex-direction:column;gap:4px;margin:0}
+.lc-ul li{font-size:15px;color:var(--body);line-height:1.3;padding-left:11px;position:relative}
+.lc-ul li:before{content:"";position:absolute;left:1px;top:8px;width:4px;height:4px;border-radius:50%;background:var(--gray2)}
+.lc-ul li b{color:var(--red);font-weight:800}
+.lc-div{border-top:1px dashed var(--wireln);margin:2px 0}
+.lc-sub{font-size:14px;font-weight:800;color:var(--charcoal);display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.lc-sub em{font-style:normal;font-size:10px;font-weight:800;color:var(--gray2);letter-spacing:.03em;text-transform:uppercase}
+.lc-cell.uvp{background:var(--red-soft);border-color:#f3c7c7;border-left:5px solid var(--red);justify-content:center;text-align:center;gap:12px}
+.lc-cell.uvp .lc-h{justify-content:center}
+.lc-uvp{font-size:22px;font-weight:800;color:var(--ink);line-height:1.3}
+.lc-uvp b{color:var(--red);font-weight:900}
+.lc-concept{font-size:14px;color:var(--body);line-height:1.36}
+.lc-concept .cl{display:block;font-size:11px;font-weight:800;color:var(--red);letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px}
+.lc-txt{font-size:14px;color:var(--body);line-height:1.36}
+.lc-txt b{color:var(--red);font-weight:800}
+.lc-note{font-size:14.5px;color:var(--gray);text-align:center;margin-top:15px;line-height:1.45}
+.lc-note b{color:var(--body);font-weight:700}
 #bar{position:fixed;top:0;left:0;height:3px;background:var(--red);z-index:20;transition:width .25s}
 .hint{position:fixed;right:16px;bottom:12px;z-index:20;font-size:12px;color:#6b7076;background:rgba(255,255,255,.75);border-radius:8px;padding:6px 11px}
 </style>
@@ -781,7 +813,101 @@ td b{color:var(--red);font-weight:800}
   </div>
 </section>
 
-<!-- 18 · Closing -->
+<!-- 18 · 린 캔버스 (사업모델 한 장) -->
+<section class="slide">
+  <div class="hd"><span class="sec">사업모델 · 린 캔버스</span><span class="pg"></span></div>
+  <div class="tw">
+    <div class="eyebrow">밖에서 본 사업모델 가설 · 입사 후 데이터로 검증 — 한 장으로</div>
+    <div class="headline sm">떠리몰을 한 장으로 — <span class="red">린 캔버스</span></div>
+  </div>
+  <div class="body" style="margin-top:20px">
+    <div class="lc">
+      <!-- ① 문제 + 기존 대안 -->
+      <div class="lc-cell prob">
+        <div class="lc-h"><span class="no">①</span>문제 <em>Problem</em></div>
+        <ul class="lc-ul">
+          <li>공급자: 체화재고(과다·이월·임박·리퍼·시즌아웃)를 <b>브랜드 훼손 없이 빠르게 현금화</b></li>
+          <li>소비자: “왜 이렇게 싸지?” 답이 없으면 <b>‘싼 데는 이유’로 이탈</b></li>
+        </ul>
+        <div class="lc-div"></div>
+        <div class="lc-sub">기존 대안 <em>Existing Alternatives</em></div>
+        <ul class="lc-ul">
+          <li>쿠팡·네이버·자사몰 할인 (누구나 가능)</li>
+          <li>가격 이유는 캠페인 카피에만</li>
+          <li>배송비 조합을 고객이 직접 계산</li>
+        </ul>
+      </div>
+      <!-- ④ 솔루션 -->
+      <div class="lc-cell sol">
+        <div class="lc-h"><span class="no">④</span>솔루션 <em>Solution</em></div>
+        <ul class="lc-ul">
+          <li><b>DEAL PASSPORT</b>: 할인 이유=표준 속성</li>
+          <li>Shipping Optimizer · 3중 가격 병기 · 개인화 Deal Feed</li>
+          <li>B2B Liquidation OS · Dynamic Pricing</li>
+        </ul>
+      </div>
+      <!-- ⑧ 핵심지표 -->
+      <div class="lc-cell met">
+        <div class="lc-h"><span class="no">⑧</span>핵심지표 <em>Key Metrics</em></div>
+        <ul class="lc-ul">
+          <li>단일 KPI: <b>Gross Profit / Inventory Day</b> (재고 1일당 총이익)</li>
+          <li>재고회전일수 · Sell-through</li>
+          <li>폐기율 · 기여마진</li>
+        </ul>
+      </div>
+      <!-- ③ 고유 가치제안 (심장) -->
+      <div class="lc-cell uvp">
+        <div class="lc-h"><span class="no">③</span>고유 가치제안 <em>UVP</em></div>
+        <div class="lc-uvp">체화재고를 <b>가장 빠르고 높은 가치</b>로<br>현금화하는 운영체계</div>
+        <div class="lc-concept"><span class="cl">High-Level Concept</span>재고 가치의 ‘시간차’를 거래로 바꾸는 <b>Inventory Liquidity Network</b> (재고 유동성 네트워크)</div>
+      </div>
+      <!-- ⑨ 경쟁 우위 -->
+      <div class="lc-cell adv">
+        <div class="lc-h"><span class="no">⑨</span>경쟁 우위 <em>Unfair Advantage</em></div>
+        <ul class="lc-ul">
+          <li>체화재고 공급망의 <b>네트워크 효과</b></li>
+          <li>쌓이는 자산 4종: 공급사 네트워크 · 가격/타이밍 데이터 · 구매자 풀 · 재고 소진 능력</li>
+        </ul>
+      </div>
+      <!-- ⑤ 채널 -->
+      <div class="lc-cell chan">
+        <div class="lc-h"><span class="no">⑤</span>채널 <em>Channels</em></div>
+        <ul class="lc-ul">
+          <li>떠리몰 앱/웹 (수요측 인터페이스)</li>
+          <li>Deal Feed 알림 · 떠리배송+판매자배송 · B2B=OS</li>
+          <li>※마케팅 획득채널 <b>입사 후 검증</b></li>
+        </ul>
+      </div>
+      <!-- ② 고객군 + 얼리어답터 -->
+      <div class="lc-cell cust">
+        <div class="lc-h"><span class="no">②</span>고객군 <em>Customer Segments</em></div>
+        <ul class="lc-ul">
+          <li><b>양면 시장</b></li>
+          <li>공급자: 체화재고 보유 브랜드·제조·유통 (누적 8,128곳ⓔ)</li>
+          <li>소비자: 가격민감 (DAU 약 35만·재구매 66%ⓔ)</li>
+        </ul>
+        <div class="lc-div"></div>
+        <div class="lc-sub">얼리어답터 <em>Early Adopters</em></div>
+        <ul class="lc-ul">
+          <li>※구체 정의는 <b>입사 후 검증</b></li>
+        </ul>
+      </div>
+      <!-- ⑦ 비용구조 -->
+      <div class="lc-cell cost">
+        <div class="lc-h"><span class="no">⑦</span>비용구조 <em>Cost Structure</em></div>
+        <div class="lc-txt">1P 직매입의 <b>재고·폐기·보관 위험 직접 부담</b> · 배송비율·폐기율·취소반품률 관리 · ※세부 원가 <b>입사 후 검증</b></div>
+      </div>
+      <!-- ⑥ 수익원 -->
+      <div class="lc-cell rev">
+        <div class="lc-h"><span class="no">⑥</span>수익원 <em>Revenue Streams</em></div>
+        <div class="lc-txt">1P 매입가–판매가 차익(마진) · 3P 입점 수수료(통신판매중개) · (미래) B2B Liquidation OS</div>
+      </div>
+    </div>
+    <div class="lc-note">린 캔버스 · Lean Startup(에릭 리스) 계열 프레임 — Ash Maurya · 번호 ①~⑨는 권장 작성 순서 · <b>ⓔ 공개/추정치</b></div>
+  </div>
+</section>
+
+<!-- 19 · Closing -->
 <section class="slide close">
   <div class="hd"><span class="sec">클로징</span><span class="pg"></span></div>
   <div class="tw">
