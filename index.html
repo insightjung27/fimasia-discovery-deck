@@ -789,35 +789,89 @@ td b{color:var(--red);font-weight:800}
   </div>
 </section>
 
-<!-- 13 · AI 로드맵 -->
+<!-- 13 · 재고 기반 가격 추천 (의사결정 지원) -->
 <section class="slide">
-  <div class="hd"><span class="sec">AI 로드맵</span><span class="pg"></span></div>
+  <div class="hd"><span class="sec">가격 의사결정 지원</span><span class="pg"></span></div>
   <div class="tw">
-    <div class="eyebrow">밖에서 본 관찰 · 챗봇부터 붙이면 안 된다 · ROI·실현가능성 순서</div>
-    <div class="headline sm">체화재고 사업의 핵심 알고리즘은 <span class="red">Dynamic Pricing</span></div>
+    <div class="eyebrow">자동 가격 결정이 아니다 · 소진위험 탐지부터 시작해, 데이터가 검증되는 만큼 추천→자동화 수준을 높인다</div>
+    <div class="headline sm">재고 기반 <span class="red">가격 추천</span> — MD가 먼저 볼 상품·조정범위를 제안</div>
   </div>
-  <div class="body" style="margin-top:22px">
-    <div class="pipe pipecol" style="margin-bottom:22px">
-      <div class="piperow">
-        <span class="pn red">① Dynamic Pricing</span><span class="pa">→</span>
-        <span class="pn">② 재고 수요예측</span><span class="pa">→</span>
-        <span class="pn">③ 개인화 Deal Ranking</span>
+  <div class="body" style="margin-top:20px">
+    <div class="paybar neu" style="margin-bottom:20px">
+      <span class="tag">핵심</span>
+      <span class="t">재고 수량 <b>Q</b>와 남은 판매기간 <b>T</b>로 ‘필요 판매속도’를 계산해 <b>소진 위험이 높은 상품을 먼저 찾고</b>, 가격변화 데이터가 충분한 상품은 후보별 예상 판매량·이익을 비교해 <b>MD에게 추천</b>합니다.</span>
+    </div>
+
+    <div class="cards c3" style="margin-bottom:22px">
+      <div class="card hot" style="gap:11px">
+        <span class="num">① 지금 가능 · Q·T만</span>
+        <div class="kh">소진위험 탐지</div>
+        <div class="kt"><b>필요 판매속도 = 남은 재고 ÷ 남은 기간.</b> 현재 판매속도와 비교해 위험 상품을 먼저 찾는다.</div>
+        <div style="background:#fff;border:1.5px solid #f3c7c7;border-radius:11px;padding:12px 15px;font-size:18px;font-weight:800;color:var(--ink);line-height:1.42">
+          재고 <span class="red">1,000개</span> ÷ <span class="red">10일</span> = <span style="white-space:nowrap">필요 <span class="red">100개/일</span></span>
+          <div style="font-size:15.5px;font-weight:700;color:var(--gray);margin-top:4px">현재 판매 60개/일 → 소진 위험</div>
+        </div>
+        <div style="font-size:14px;font-weight:800;color:var(--gray);margin-top:1px">소진위험 자동 분류</div>
+        <div class="chain">
+          <span class="cc">가격유지</span><span class="cc">노출·프로모션</span><span class="cc red">가격조정 검토</span><span class="cc red">MD 즉시확인</span>
+        </div>
       </div>
-      <span class="pdown">↓</span>
-      <div class="piperow">
-        <span class="pn">④ 상품·하자 자동분류</span><span class="pa">→</span>
-        <span class="pn">⑤ 공급사 Liquidation Quote</span><span class="pa">→</span>
-        <span class="pn soft">⑥ CS 자동화</span>
+      <div class="card" style="gap:11px">
+        <span class="num">② 데이터가 쌓이면</span>
+        <div class="kh">MD에게 가격 추천</div>
+        <div class="kt">가격 후보별 <b>예상 판매량 V(P)</b>로 이익을 비교해 <b>MD에게 추천</b>한다. 최종 결정은 MD.</div>
+        <div style="background:#f3f4f6;border-left:5px solid var(--charcoal);border-radius:0 11px 11px 0;padding:12px 16px;font-size:17px;color:var(--body);line-height:1.44">
+          <b style="color:var(--ink)">‘할인율 5% vs 10%’</b>는 Q·T만으론 못 구한다 — 과거 <span class="red">가격변화 데이터</span>가 필요.
+        </div>
+        <div style="font-size:14px;font-weight:800;color:var(--gray);margin-top:1px">함께 제시</div>
+        <div class="chain">
+          <span class="cc">추천가</span><span class="cc">추천 범위</span><span class="cc">예상 판매량</span><span class="cc">신뢰도</span>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--gray)">값 하나만 던지지 않고 근거를 함께.</div>
+      </div>
+      <div class="card" style="gap:11px">
+        <span class="num">③ 발전 방향 · 단계적 자동화</span>
+        <div class="kh">탐지 → 추천 → 자동</div>
+        <div class="kt">데이터가 검증되는 만큼 자동화 수준을 <b>단계적으로</b> 높인다.</div>
+        <div class="chain" style="margin-top:1px">
+          <span class="cc red">1 소진위험 탐지</span><span class="ar">→</span>
+          <span class="cc red">2 MD 근거 제시</span><span class="ar">→</span>
+          <span class="cc">3 결과 예측</span><span class="ar">→</span>
+          <span class="cc">4 승인범위 자동</span>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--gray);margin-top:4px">1·2 = 지금 가능 · <b style="color:var(--body)">3·4 = 데이터 검증 후</b></div>
       </div>
     </div>
-    <div class="dyn">
-      <div class="dt">Dynamic Pricing — 가격을 사람이 다 판단하는 건 비효율</div>
-      <div class="dd">재고 수량 <b>Q</b>와 남은 기간 <b>T</b>에서, 가격 <b>P</b>의 예상 판매속도 <b>V</b>를 예측해 <b>총이익이 최대가 되는 가격</b>을 자동 결정한다.</div>
-      <div class="vars">
-        <span class="var">오늘 <b>12,000원</b>에 팔까</span>
-        <span class="var">D-30까지 기다려 <b>7,000원</b>에 팔까</span>
-        <span class="var">→ 이 판단을 <b>알고리즘</b>이</span>
+
+    <div class="barstitle" style="margin-bottom:12px">MD가 보는 화면 — 가격 하나가 아니라 ‘근거 + 신뢰도’를 함께</div>
+    <div class="cx2" style="align-items:stretch;margin-bottom:14px">
+      <div>
+        <div style="text-align:center;margin-bottom:10px"><span style="display:inline-block;background:var(--charcoal);color:#fff;font-size:15px;font-weight:800;border-radius:999px;padding:7px 16px;letter-spacing:.02em">데이터 부족 · 초기</span></div>
+        <div class="ptrust">
+          <div class="prow"><span class="pl">소진위험</span><span class="pv red">높음</span></div>
+          <div class="prow"><span class="pl">재고 · 남은기간</span><span class="pv">1,000개 · 10일</span></div>
+          <div class="prow"><span class="pl">필요 / 현재 속도</span><span class="pv">100 / 60 <span style="font-size:15px;color:var(--gray)">개·일</span></span></div>
+          <div class="prow"><span class="pl">추천 행동</span><span class="pv" style="font-size:19px">가격조정 검토 · 메인노출 · 묶음</span></div>
+          <div class="prow unit" style="border-bottom:none"><span class="pl" style="font-size:17px;color:var(--body)">가격추천 신뢰도<small>사유 · 과거 가격변경 데이터 부족</small></span><span class="pv" style="font-size:20px;color:var(--gray)">낮음</span></div>
+        </div>
       </div>
+      <div class="cxarr">→</div>
+      <div>
+        <div style="text-align:center;margin-bottom:10px"><span style="display:inline-block;background:var(--red);color:#fff;font-size:15px;font-weight:800;border-radius:999px;padding:7px 16px;letter-spacing:.02em">데이터 충분</span></div>
+        <div class="ptrust">
+          <div class="prow"><span class="pl">소진위험</span><span class="pv">관리됨</span></div>
+          <div class="prow ours"><span class="pl">추천가</span><span class="pv">9,000원</span></div>
+          <div class="prow"><span class="pl">추천 범위</span><span class="pv">8,800 ~ 9,200원</span></div>
+          <div class="prow"><span class="pl">예상 일판매량</span><span class="pv">90 ~ 110개</span></div>
+          <div class="prow"><span class="pl">신뢰도</span><span class="pv">중간</span></div>
+          <div class="prow unit" style="border-bottom:none"><span class="pl" style="font-size:17px;color:var(--body)">최종 적용</span><span class="pv red" style="font-size:22px">MD 승인 필요</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="margin-bottom:18px">숫자는 설명용 <b>가정 예시</b> · 떠리몰의 <b>가격변경 이력·원가·재고손실 데이터</b>는 입사 후 확인해 반영합니다.</div>
+
+    <div class="darkbox">
+      <div class="dt">지금 <b>자동으로 가격을 정하겠다는 제안이 아니라</b>, 소진위험 탐지부터 시작해 데이터가 검증되는 만큼 <span class="red">가격 추천과 자동화 수준</span>을 높이겠다는 제안입니다.</div>
     </div>
   </div>
 </section>
